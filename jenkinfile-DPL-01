@@ -1,0 +1,27 @@
+pipeline {
+    agent none 
+    stages { 
+        stage ("SCM Checkin-1") {
+            agent { label 'Java' }
+            steps {
+                git branch: 'master', url: 'https://github.com/Vishwanathms/SampleMaven'
+            }
+        }
+        stage ("Mvn Build") {
+            agent { label 'Java' }
+            tools {
+                maven 'maven-3.6.2'
+                jdk "JDK1.8"
+            }
+            steps {
+                sh "mvn package"
+            }
+        }
+        stage ("list the files") {
+            agent { label 'master' }
+            steps {
+                sh "ls -l /root"
+            }
+        }
+    }
+}
