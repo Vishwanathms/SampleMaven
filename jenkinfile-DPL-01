@@ -20,7 +20,7 @@ pipeline {
         stage ("list the files") {
             agent { label 'master' }
             steps {
-                sh "ls -l /root"
+                sh "ls -l"
             }
         }
     }
