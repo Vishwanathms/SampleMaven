@@ -22,7 +22,7 @@ pipeline {
         }
         stage ("Run the Container") {
             steps {
-                sh "docker run -d -p 90:8080 -name cont01 vishwacloudlab/tomcat-custom01"
+                sh "docker run -d -p 90:8080 --name cont01 vishwacloudlab/tomcat-custom01"
             }
         }
         stage ("Check the webpage") {
