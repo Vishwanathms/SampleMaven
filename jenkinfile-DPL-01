@@ -33,7 +33,12 @@ pipeline {
         }
         stage ("Commit the container") {
             steps {
-                sh "docker commit cont01 -t vishwacloudlab/tomcat-custom02"
+                sh "docker commit cont01 vishwacloudlab/tomcat-custom02:latest"
+            }
+        }
+        stage ("Push to Docker HUB") {
+            steps {
+                sh "docker push vishwacloudlab/tomcat-custom02:latest"
             }
         }
     }
