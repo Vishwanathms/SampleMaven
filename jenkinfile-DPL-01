@@ -1,14 +1,12 @@
 pipeline {
-    agent none 
+    agent { label 'Java' }
     stages { 
         stage ("SCM Checkin-1") {
-            agent { label 'Java' }
             steps {
                 git branch: 'master', url: 'https://github.com/Vishwanathms/SampleMaven'
             }
         }
         stage ("Mvn Build") {
-            agent { label 'Java' }
             tools {
                 maven 'maven-3.6.2'
                 jdk "JDK1.8"
@@ -17,10 +15,19 @@ pipeline {
                 sh "mvn package"
             }
         }
-        stage ("list the files") {
-            agent { label 'master' }
+        stage ("Build the Image") {
             steps {
-                sh "ls -l"
+                sh "docker build . -t vishwacloudlab/tomcat-custom01"
+            }
+        }
+        stage ("Run the Container") {
+            steps {
+                sh "docker run -d -p 90:8080 vishwacloudlab/tomcat-custom01"
+            }
+        }
+        stage ("Check the webpage") {
+            steps {
+                sh "curl http://192.168.213.102:90/mvn-hello-world"
             }
         }
     }
