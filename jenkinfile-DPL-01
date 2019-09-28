@@ -22,12 +22,18 @@ pipeline {
         }
         stage ("Run the Container") {
             steps {
-                sh "docker run -d -p 90:8080 vishwacloudlab/tomcat-custom01"
+                sh "docker run -d -p 90:8080 -name cont01 vishwacloudlab/tomcat-custom01"
             }
         }
         stage ("Check the webpage") {
             steps {
-                sh "curl http://192.168.213.102:90/mvn-hello-world"
+                sh "sleep 15"
+                sh "curl http://192.168.213.102:90"
+            }
+        }
+        stage ("Commit the container") {
+            steps {
+                sh "docker commit cont01 -t vishwacloudlab/tomcat-custom02"
             }
         }
     }
