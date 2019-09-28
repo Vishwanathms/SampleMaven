@@ -3,26 +3,26 @@ pipeline {
     stages { 
         stage ("SCM Checkin-1") {
             steps {
-                git branch: 'master', url: 'https://github.com/Vishwanathms/SampleMaven'
+              git branch: 'master', url: 'https://github.com/Vishwanathms/SampleMaven'
             }
         }
-        stage ("Mvn Build") {
+        stage ("maven build") {
             tools {
                 maven 'maven-3.6.2'
-                jdk "JDK1.8"
+                jdk 'JDK1.8'
             }
             steps {
                 sh "mvn package"
             }
         }
-        stage ("Build the Image") {
+        stage ("Build the Docker Image") {
             steps {
-                sh "docker build . -t vishwacloudlab/tomcat-custom01"
+                sh "docker build . -t vishwacloudlab/tomcat-b15"
             }
         }
         stage ("Run the Container") {
             steps {
-                sh "docker run -d -p 90:8080 --name cont01 vishwacloudlab/tomcat-custom01"
+                sh "docker run -d -p 90:8080 --name cont01 vishwacloudlab/tomcat-b15"
             }
         }
         stage ("Check the webpage") {
@@ -31,14 +31,18 @@ pipeline {
                 sh "curl http://192.168.213.102:90"
             }
         }
-        stage ("Commit the container") {
-            steps {
-                sh "docker commit cont01 vishwacloudlab/tomcat-custom02:latest"
-            }
-        }
         stage ("Push to Docker HUB") {
             steps {
-                sh "docker push vishwacloudlab/tomcat-custom02:latest"
+                sh "docker push vishwacloudlab/tomcat-b15:latest"
+            }
+        }
+        stage ("Cleanup the previous Docker Image and container") {
+            input {
+                    message 'Can we Delete the Docker image and Container'
+            }
+            steps {
+                sh "docker rm cont01 -f"
+                sh "docker image rmi vishwacloudlab/tomcat-b15 -f"
             }
         }
     }
